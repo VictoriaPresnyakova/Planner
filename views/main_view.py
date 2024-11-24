@@ -12,6 +12,9 @@ class MainView(QWidget):
         self.profile_button = QPushButton('Profile', self)
         layout.addWidget(self.profile_button)
 
+        self.create_task_button = QPushButton('Create Task', self)
+        layout.addWidget(self.create_task_button)
+
         self.exit_button = QPushButton('Exit', self)
         layout.addWidget(self.exit_button)
 

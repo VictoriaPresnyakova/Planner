@@ -3,15 +3,19 @@ from threading import Thread
 from PyQt5.QtWidgets import QApplication, QMessageBox
 
 from controllers.auth_controller import AuthController
+from controllers.create_task_controller import CreateTaskController
 from controllers.initial_controller import InitialController
 from controllers.main_controller import MainController
 from controllers.profile_controller import ProfileController
 from controllers.sign_up_auth_controller import SignUpAuthController
 from controllers.signup_controller import SignUpController
 from controllers.login_controller import LoginController
+from misc.config import TEST_MODE
 from models.user import User
 from repositories.db.migrate import alembic_auto_migrate
+from services.user_service import UserService
 from views.auth_view import AuthView
+from views.create_task_view import CreateTaskView
 from views.initial_view import InitialView
 from views.login_view import LoginView
 
@@ -40,6 +44,7 @@ class MainWindow(QMainWindow):
         self.signup_auth_view = SignUpAuthView()
         self.auth_view = AuthView()
         self.profile_view = ProfileView()
+        self.create_task_view = CreateTaskView()
         self.main_view = MainView()
 
         # Initialize controllers
@@ -52,6 +57,7 @@ class MainWindow(QMainWindow):
         self.settings_controller = None
         self.profile_controller = None
         self.access_controller = None
+        self.create_task_controller = None
 
 
         # Add views to stacked widget
@@ -61,10 +67,16 @@ class MainWindow(QMainWindow):
         self.stacked_widget.addWidget(self.signup_auth_view)
         self.stacked_widget.addWidget(self.auth_view)
         self.stacked_widget.addWidget(self.profile_view)
+        self.stacked_widget.addWidget(self.create_task_view)
         self.stacked_widget.addWidget(self.main_view)
+
 
         # Show initial view initially
         self.stacked_widget.setCurrentWidget(self.initial_view)
+
+        if TEST_MODE:
+            self.set_current_user(UserService().find_user_by_id(1))
+            self.show_main_view()
 
     def show_login_view(self):
         self.stacked_widget.setCurrentWidget(self.login_view)
@@ -93,6 +105,14 @@ class MainWindow(QMainWindow):
         else:
             self.show_message_box('Please Log In', 'You should log in first',
                                                   lambda: self.show_main_view())
+
+    def show_create_task_view(self):
+        if CURRENT_USER:
+            self.create_task_controller = CreateTaskController(self.create_task_view, self, CURRENT_USER)
+            self.stacked_widget.setCurrentWidget(self.create_task_view)
+        else:
+            self.show_message_box('Please Log In', 'You should log in first',
+                                  lambda: self.show_main_view())
 
     def show_message_box(self, title, text, on_click=None):
         msg = QMessageBox()

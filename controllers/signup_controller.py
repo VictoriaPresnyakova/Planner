@@ -26,7 +26,7 @@ class SignUpController:
         if self.view.email_input.text().count('@') != 1:
             self.view.message_label.setText('Incorrect email')
             return
-        if self.user_service.get_user_by_email(self.view.email_input.text()).__dict__:
+        if self.user_service.get_user_by_email(self.view.email_input.text()):
             self.view.message_label.setText('User with such email already exists')
             return
         if self.view.password_input.text() == '':

@@ -7,4 +7,4 @@ class User:
             setattr(self, key, value)
 
     def __repr__(self):
-        return f'<User(email={self.email})>'
+        return f"<User(id={self.id}, name={self.name} {self.surname})>"

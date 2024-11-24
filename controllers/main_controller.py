@@ -6,6 +6,7 @@ class MainController:
         self.view = view
         self.main_window = main_window
         self.view.profile_button.clicked.connect(lambda: self.main_window.show_profile_view())
+        self.view.create_task_button.clicked.connect(lambda: self.main_window.show_create_task_view())
         self.view.exit_button.clicked.connect(self.exit)
 
     def exit(self):
