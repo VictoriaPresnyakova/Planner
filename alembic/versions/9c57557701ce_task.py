@@ -30,7 +30,7 @@ def upgrade():
                   nullable=False, server_default=TaskStatus.NEW),
         sa.Column('assigned_user_id', sa.Integer, ForeignKey("user.id", ondelete='SET NULL'), nullable=True),
         sa.Column('created_at', sa.DateTime(), nullable=False),
-        sa.Column('deadline', sa.DateTime(), nullable=False),
+        sa.Column('deadline', sa.DateTime(), nullable=True),
         sa.Column('user_id', sa.Integer, ForeignKey("user.id", ondelete='SET NULL'), nullable=False),
     )
 
