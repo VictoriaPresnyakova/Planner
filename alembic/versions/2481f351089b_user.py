@@ -12,7 +12,6 @@ import sqlalchemy as sa
 # revision identifiers, used by Alembic.
 from sqlalchemy import ForeignKey
 
-from repositories.db.enums import UserNotification, NotificationType
 
 revision = '2481f351089b'
 down_revision = None
@@ -21,7 +20,6 @@ depends_on = None
 
 
 def upgrade():
-    from repositories.db.enums import UserRole
     user = op.create_table(
         'user',
         sa.Column('id', sa.Integer, primary_key=True, autoincrement=True),
