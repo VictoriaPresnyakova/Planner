@@ -31,13 +31,14 @@ class EditTaskController:
         self.task.status = self.view.status_input.currentText()
 
         assigned_user_name = self.view.assigned_user_input.currentText()
-        user = next((u for u in self.user_service.get_all_users() if f"{u.first_name} {u.last_name}" == assigned_user_name), None)
+        user = next((u for u in self.user_service.get_all_users() if f"{u.name} {u.surname}" == assigned_user_name), None)
         self.task.assigned_user_id = user.id if user else None
 
         self.task.deadline = self.view.deadline_input.dateTime().toPyDateTime() if self.view.deadline_input.text() else None
 
         self.task_service.update_task(self.task)
-        self.main_window.show_task_list_view()
+        self.main_window.task_list_controller.load_tasks()  # Обновляем список задач
+        self.back()  # Возвращаемся на страницу списка задач
 
     def delete_task(self):
         confirmation = self.confirm_delete()
