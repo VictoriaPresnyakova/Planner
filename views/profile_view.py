@@ -18,12 +18,12 @@ class ProfileView(QWidget):
         self.name_label = QLabel('Name', self)
         self.name_input = QLineEdit(self)
         layout.addWidget(self.name_label)
-        layout.addWidget(self.name_label)
+        layout.addWidget(self.name_input)
 
         self.surname_label = QLabel('Surname', self)
         self.surname_input = QLineEdit(self)
         layout.addWidget(self.surname_label)
-        layout.addWidget(self.surname_label)
+        layout.addWidget(self.surname_input)
 
         self.save_button = QPushButton('Save', self)
         layout.addWidget(self.save_button)
