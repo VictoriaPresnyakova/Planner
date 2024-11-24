@@ -17,6 +17,7 @@ SQL_PORT = env.get('SQL_PORT')
 EMAIL = env.get('EMAIL')
 EMAIL_PASSWORD = env.get('EMAIL_PASSWORD')
 
+TEST_MODE = env.get('TEST_MODE') == 'True'
 
 
 
