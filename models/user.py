@@ -1,4 +1,3 @@
-from repositories.db.enums import UserRole, UserNotification
 
 
 class User:
