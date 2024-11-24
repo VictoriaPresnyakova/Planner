@@ -20,17 +20,20 @@ class TaskListController:
         self.view.table.setRowCount(len(tasks))
 
         for row, task in enumerate(tasks):
-            #TODO
-            item = QTableWidgetItem(str(task.id))
-            item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)  # Только для чтения
-            self.view.table.setItem(row, 0, item)
-            self.view.table.setItem(row, 1, QTableWidgetItem(task.title))
-            self.view.table.setItem(row, 2, QTableWidgetItem(task.description))
-            self.view.table.setItem(row, 3, QTableWidgetItem(task.status))
+            self._add_readonly_item(row, 0, str(task.id))
+            self._add_readonly_item(row, 1, task.title)
+            self._add_readonly_item(row, 2, task.description)
+            self._add_readonly_item(row, 3, task.status)
             assigned_user = self.user_service.find_user_by_id(task.assigned_user_id)
             assigned_user_name = f"{assigned_user.name} {assigned_user.surname}" if assigned_user else "Unassigned"
-            self.view.table.setItem(row, 4, QTableWidgetItem(assigned_user_name))
-            self.view.table.setItem(row, 5, QTableWidgetItem(task.deadline.strftime("%Y-%m-%d %H:%M") if task.deadline else "No deadline"))
+            self._add_readonly_item(row, 4, assigned_user_name)
+            self._add_readonly_item(row, 5,
+                task.deadline.strftime("%Y-%m-%d %H:%M") if task.deadline else "No deadline")
+
+    def _add_readonly_item(self, row, column, text):
+        item = QTableWidgetItem(text)
+        item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)  # Только для чтения
+        self.view.table.setItem(row, column, item)
 
     def open_task_details(self, row, column):
         task_id = int(self.view.table.item(row, 0).text())
