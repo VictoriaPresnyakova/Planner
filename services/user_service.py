@@ -22,34 +22,30 @@ class UserService:
         return result
 
     def get_user_by_email(self, emal: str):
-        try:
-            return User(**self.repository.get_user_by_email(emal))
-        except Exception as e:
-            print(e)
-            return None
+        user = self.repository.get_user_by_email(emal)
+        if user:
+            return User(**user)
+        return None
 
     def create_user(self, kwargs):
-        try:
-            return User(**self.repository.create_user(clear_rest_input_parameters(kwargs)))
-        except Exception as e:
-            print(e)
-            return False
+        user = self.repository.create_user(clear_rest_input_parameters(kwargs))
+        if user:
+            return User(**user)
+        return False
 
     def find_user_by_id(self, id: int):
-        try:
-            return User(**self.repository.find_user_by_id(id))
-        except Exception as e:
-            print(e)
-            return None
+        user = self.repository.find_user_by_id(id)
+        if user:
+            return User(**user)
+        return None
 
     def update_user(self, user: User):
-        try:
-            kwargs = deepcopy(user.__dict__)
-            id = kwargs.pop('id', -1)
-            return User(**self.repository.update_user_by_id(id, clear_rest_input_parameters(kwargs)))
-        except Exception as e:
-            print(e)
-            return None
+        kwargs = deepcopy(user.__dict__)
+        id = kwargs.pop('id', -1)
+        user = self.repository.update_user_by_id(id, clear_rest_input_parameters(kwargs))
+        if user:
+            return User(**user)
+        return False
 
     def delete_user_by_id(self, id: int):
         return self.repository.delete_user_by_id(id)
