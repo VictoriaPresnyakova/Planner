@@ -1,5 +1,6 @@
-from PyQt5.QtCore import QSortFilterProxyModel, Qt
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QTableWidgetItem
+
 
 class TaskListController:
     def __init__(self, view, main_window, user, task_service, user_service):
@@ -10,10 +11,8 @@ class TaskListController:
         self.user_service = user_service
 
         self.view.back_button.clicked.connect(self.back)
-        self.view.table.cellDoubleClicked.connect(self.open_task_details)
-
-        # Подключаем фильтр
         self.view.filter_input.textChanged.connect(self.filter_tasks)
+        self.view.tabs.currentChanged.connect(self.load_tasks)
 
         self.load_tasks()
 
@@ -21,37 +20,41 @@ class TaskListController:
         self.main_window.show_main_view()
 
     def load_tasks(self):
-        tasks = self.task_service.get_tasks_by_user_id(self.user.id)
+        current_tab_index = self.view.tabs.currentIndex()
 
-        self.view.table.setRowCount(len(tasks))
+        if current_tab_index == 0:
+            tasks = self.task_service.get_tasks_by_assigned_user_id(self.user.id)
+            table = self.view.assigned_table
+        else:
+            tasks = self.task_service.get_tasks_created_by_user_id(self.user.id)
+            table = self.view.created_table
+
+        table.setRowCount(len(tasks))
 
         for row, task in enumerate(tasks):
-            self._add_readonly_item(row, 0, task.created_at.strftime("%Y-%m-%d %H:%M"))
-            self._add_readonly_item(row, 1, task.title)
-            self._add_readonly_item(row, 2, task.description)
-            self._add_readonly_item(row, 3, task.status)
+            self._add_readonly_item(table, row, 0, task.created_at.strftime("%Y-%m-%d %H:%M") )
+            self._add_readonly_item(table, row, 1, task.title)
+            self._add_readonly_item(table, row, 2, task.description)
+            self._add_readonly_item(table, row, 3, task.status)
             assigned_user = self.user_service.find_user_by_id(task.assigned_user_id)
             assigned_user_name = f"{assigned_user.name} {assigned_user.surname}" if assigned_user else "Unassigned"
-            self._add_readonly_item(row, 4, assigned_user_name)
-            self._add_readonly_item(row, 5, task.deadline.strftime("%Y-%m-%d %H:%M") if task.deadline else "No deadline")
+            self._add_readonly_item(table, row, 4, assigned_user_name)
+            self._add_readonly_item(table, row, 5,
+                                    task.deadline.strftime("%Y-%m-%d %H:%M") if task.deadline else "No deadline")
 
-    def _add_readonly_item(self, row, column, text):
+    def _add_readonly_item(self, table, row, column, text):
         item = QTableWidgetItem(text)
         item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)  # Только для чтения
-        self.view.table.setItem(row, column, item)
-
-    def open_task_details(self, row, column):
-        task_id = int(self.view.table.item(row, 0).text())
-        task = self.task_service.find_task_by_id(task_id)
-        self.main_window.show_task_edit_view(task)
+        table.setItem(row, column, item)
 
     def filter_tasks(self, text):
         """Фильтрует таблицу по введённому тексту."""
-        for row in range(self.view.table.rowCount()):
+        table = self.view.tabs.currentWidget()
+        for row in range(table.rowCount()):
             row_hidden = True
-            for col in range(self.view.table.columnCount()):
-                item = self.view.table.item(row, col)
+            for col in range(table.columnCount()):
+                item = table.item(row, col)
                 if item and text.lower() in item.text().lower():
                     row_hidden = False
                     break
-            self.view.table.setRowHidden(row, row_hidden)
+            table.setRowHidden(row, row_hidden)

@@ -12,6 +12,10 @@ class TaskRepoABC(ABC):
         pass
 
     @abstractmethod
+    def get_tasks_by_filter(self, filter_query: str, limit, offset):
+        pass
+
+    @abstractmethod
     def create_task(self, kwargs):
         pass
 

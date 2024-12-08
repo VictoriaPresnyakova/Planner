@@ -1,5 +1,7 @@
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QTableWidget, QPushButton, QLabel, QLineEdit, QHeaderView, QTableView
-from PyQt5.QtCore import Qt, QSortFilterProxyModel, QRegExp
+from PyQt5.QtWidgets import (
+    QWidget, QVBoxLayout, QTableWidget, QPushButton, QLabel,
+    QLineEdit, QHeaderView, QTabWidget
+)
 
 class TaskListView(QWidget):
     def __init__(self):
@@ -17,14 +19,29 @@ class TaskListView(QWidget):
         self.filter_input.setPlaceholderText("Filter tasks...")
         layout.addWidget(self.filter_input)
 
-        # Таблица для отображения задач
-        self.table = QTableWidget(self)
-        self.table.setColumnCount(6)
-        self.table.setHorizontalHeaderLabels(["Created At", "Title", "Description", "Status", "Assigned User", "Deadline"])
-        self.table.horizontalHeader().setStretchLastSection(True)
-        self.table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        self.table.setSortingEnabled(True)  # Включаем сортировку
-        layout.addWidget(self.table)
+        # Вкладки для разделения задач
+        self.tabs = QTabWidget(self)
+
+        # Таблица для задач, назначенных пользователю
+        self.assigned_table = QTableWidget(self)
+        self.assigned_table.setColumnCount(6)
+        self.assigned_table.setHorizontalHeaderLabels(["Created At", "Title", "Description", "Status", "Assigned User", "Deadline"])
+        self.assigned_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.assigned_table.setSortingEnabled(True)
+        self.assigned_table.verticalHeader().setVisible(False)
+
+        # Таблица для задач, созданных пользователем
+        self.created_table = QTableWidget(self)
+        self.created_table.setColumnCount(6)
+        self.created_table.setHorizontalHeaderLabels(["Created At", "Title", "Description", "Status", "Assigned User", "Deadline"])
+        self.created_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.created_table.setSortingEnabled(True)
+        self.created_table.verticalHeader().setVisible(False)
+
+        # Добавляем таблицы во вкладки
+        self.tabs.addTab(self.assigned_table, "Assigned to Me")
+        self.tabs.addTab(self.created_table, "Created by Me")
+        layout.addWidget(self.tabs)
 
         # Кнопка для возврата назад
         self.back_button = QPushButton("Back", self)
