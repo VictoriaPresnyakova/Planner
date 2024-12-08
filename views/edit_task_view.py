@@ -1,6 +1,8 @@
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLineEdit, QComboBox, QPushButton, QLabel, QDateTimeEdit
 from PyQt5.QtCore import QDateTime
 
+from repositories.db.enums import TaskStatus
+
 
 class EditTaskView(QWidget):
     def __init__(self):
@@ -22,7 +24,7 @@ class EditTaskView(QWidget):
 
         self.status_label = QLabel("Status", self)
         self.status_input = QComboBox(self)
-        self.status_input.addItems(["New", "In Progress", "Completed"])
+        self.status_input.addItems([e for e in TaskStatus])
         layout.addWidget(self.status_label)
         layout.addWidget(self.status_input)
 
