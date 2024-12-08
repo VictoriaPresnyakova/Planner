@@ -43,6 +43,8 @@ class TaskListController:
             self._add_readonly_item(table, row, 5,
                                     task.deadline.strftime("%Y-%m-%d %H:%M") if task.deadline else "No deadline")
 
+        self.filter_tasks(self.view.filter_input.text())
+
     def _add_readonly_item(self, table, row, column, text):
         item = QTableWidgetItem(text)
         item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)  # Только для чтения
