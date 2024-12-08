@@ -8,6 +8,10 @@ class TaskRepoABC(ABC):
         pass
 
     @abstractmethod
+    def get_tasks_by_user_id(self, user_id, limit, offset):
+        pass
+
+    @abstractmethod
     def create_task(self, kwargs):
         pass
 

@@ -64,7 +64,7 @@ class MainWindow(QMainWindow):
         self.signup_controller = SignUpController(self.signup_view, self)
         self.auth_controller = AuthController(self.auth_view, self)
         self.sign_up_auth_controller = SignUpAuthController(self.signup_auth_view, self)
-        self.task_list_controller = TaskListController(self.task_list_view, self, self.task_service, self.user_service)
+        self.task_list_controller = None
         self.main_controller = None
         self.settings_controller = None
         self.profile_controller = None
@@ -118,7 +118,7 @@ class MainWindow(QMainWindow):
             self.stacked_widget.setCurrentWidget(self.profile_view)
         else:
             self.show_message_box('Please Log In', 'You should log in first',
-                                                  lambda: self.show_main_view())
+                                                  lambda: self.show_initial_view())
 
     def show_create_task_view(self):
         if CURRENT_USER:
@@ -126,10 +126,17 @@ class MainWindow(QMainWindow):
             self.stacked_widget.setCurrentWidget(self.create_task_view)
         else:
             self.show_message_box('Please Log In', 'You should log in first',
-                                  lambda: self.show_main_view())
+                                  lambda: self.show_initial_view())
 
     def show_task_list_view(self):
-        self.stacked_widget.setCurrentWidget(self.task_list_view)
+        if CURRENT_USER:
+            self.task_list_controller = TaskListController(self.task_list_view, self, CURRENT_USER, self.task_service,
+                                                           self.user_service)
+            self.stacked_widget.setCurrentWidget(self.task_list_view)
+        else:
+            self.show_message_box('Please Log In', 'You should log in first',
+                                  lambda: self.show_initial_view())
+
 
     def show_task_edit_view(self, task):
         self.edit_task_controller = EditTaskController(self.edit_task_view, self, task, self.task_service, self.user_service)

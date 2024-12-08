@@ -1,11 +1,14 @@
 from PyQt5.QtWidgets import QTableWidgetItem
 from PyQt5.QtCore import Qt
 
+from models.user import User
+
 
 class TaskListController:
-    def __init__(self, view, main_window, task_service, user_service):
+    def __init__(self, view, main_window, user: User, task_service, user_service):
         self.view = view
         self.main_window = main_window
+        self.user = user
         self.task_service = task_service
         self.user_service = user_service
         self.view.back_button.clicked.connect(self.back)
@@ -16,7 +19,9 @@ class TaskListController:
         self.main_window.show_main_view()
 
     def load_tasks(self):
-        tasks = self.task_service.get_all_tasks()
+        #tasks = self.task_service.get_all_tasks()
+        tasks = self.task_service.get_tasks_by_user_id(self.user.id)
+
         self.view.table.setRowCount(len(tasks))
 
         for row, task in enumerate(tasks):

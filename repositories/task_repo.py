@@ -19,6 +19,18 @@ class TaskRepo(TaskRepoABC):
         except Exception as e:
             return {}
 
+    def get_tasks_by_user_id(self, user_id, limit, offset):
+        try:
+            res = []
+            with closing(connect()) as conn:
+                with conn.cursor(cursor_factory=NamedTupleCursor) as cursor:
+                    cursor.execute('SELECT * FROM {} WHERE user_id = %s OR assigned_user_id = %s LIMIT %s offset %s'.format('public.task'), (user_id, user_id, limit, offset))
+                    for row in cursor:
+                        res.append({x: getattr(row, x) for x in row._fields})
+                    return res
+        except Exception as e:
+            return {}
+
     def create_task(self, kwargs):
         return insert_new_record('public.task', kwargs)
 

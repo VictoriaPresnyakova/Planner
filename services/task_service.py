@@ -22,6 +22,16 @@ class TaskService:
                 print(e)
         return result
 
+    def get_tasks_by_user_id(self, user_id: int, limit=500, offset=0):
+        task_list = self.repository.get_tasks_by_user_id(user_id, limit, offset)
+        result = []
+        for task in task_list:
+            try:
+                result.append(Task(**task))
+            except Exception as e:
+                print(e)
+        return result
+
     def create_task(self, kwargs):
         task = self.repository.create_task(clear_rest_input_parameters(kwargs))
         if task:
