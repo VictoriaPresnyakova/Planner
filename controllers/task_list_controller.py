@@ -19,7 +19,6 @@ class TaskListController:
         self.main_window.show_main_view()
 
     def load_tasks(self):
-        #tasks = self.task_service.get_all_tasks()
         tasks = self.task_service.get_tasks_by_user_id(self.user.id)
 
         self.view.table.setRowCount(len(tasks))
