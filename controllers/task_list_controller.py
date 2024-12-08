@@ -12,6 +12,7 @@ class TaskListController:
 
         self.view.back_button.clicked.connect(self.back)
         self.view.filter_input.textChanged.connect(self.filter_tasks)
+        self.view.reset_filter_button.clicked.connect(self.reset_filter)
         self.view.tabs.currentChanged.connect(self.load_tasks)
 
         self.load_tasks()
@@ -58,3 +59,8 @@ class TaskListController:
                     row_hidden = False
                     break
             table.setRowHidden(row, row_hidden)
+
+    def reset_filter(self):
+        """Сбрасывает фильтр и очищает поле ввода."""
+        self.view.filter_input.clear()
+        self.filter_tasks("")  # Сбрасываем фильтр, чтобы показать все строки

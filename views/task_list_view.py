@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import (
     QWidget, QVBoxLayout, QTableWidget, QPushButton, QLabel,
-    QLineEdit, QHeaderView, QTabWidget
+    QLineEdit, QHeaderView, QTabWidget, QHBoxLayout
 )
 
 class TaskListView(QWidget):
@@ -14,10 +14,16 @@ class TaskListView(QWidget):
         self.title_label = QLabel("All Tasks", self)
         layout.addWidget(self.title_label)
 
-        # Поле для фильтрации
+        # Горизонтальный layout для поля фильтрации и кнопки сброса
+        filter_layout = QHBoxLayout()
         self.filter_input = QLineEdit(self)
         self.filter_input.setPlaceholderText("Filter tasks...")
-        layout.addWidget(self.filter_input)
+        filter_layout.addWidget(self.filter_input)
+
+        self.reset_filter_button = QPushButton("Reset Filter", self)
+        filter_layout.addWidget(self.reset_filter_button)
+
+        layout.addLayout(filter_layout)
 
         # Вкладки для разделения задач
         self.tabs = QTabWidget(self)
