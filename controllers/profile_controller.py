@@ -3,14 +3,14 @@ from services.user_service import UserService
 
 
 class ProfileController:
-    def __init__(self, view, main_window, user):
+    def __init__(self, view, main_window, user, user_service):
         self.view = view
         self.main_window = main_window
         self.user = user
         self.load_user_data()
         self.view.save_button.clicked.connect(self.save_user_data)
         self.view.back_button.clicked.connect(self.back)
-        self.user_service = UserService()
+        self.user_service = user_service
 
     def back(self):
         self.view.message_label.setText('')

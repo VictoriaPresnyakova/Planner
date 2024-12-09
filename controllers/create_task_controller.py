@@ -6,12 +6,12 @@ from services.user_service import UserService
 
 
 class CreateTaskController:
-    def __init__(self, view, main_window, user):
+    def __init__(self, view, main_window, user, task_service, user_service):
         self.view = view
         self.main_window = main_window
         self.user = user
-        self.task_service = TaskService()
-        self.user_service = UserService()
+        self.task_service = task_service
+        self.user_service = user_service
         self.load_user_data()
         self.view.save_button.clicked.connect(self.save_task_data)
         self.view.back_button.clicked.connect(self.back)
