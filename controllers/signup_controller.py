@@ -6,13 +6,13 @@ from services.user_service import UserService
 
 
 class SignUpController:
-    def __init__(self, view, main_window):
+    def __init__(self, view, main_window, user_service, mail_sender):
         self.view = view
         self.main_window = main_window
         self.view.signup_button.clicked.connect(self.handle_signup)
         self.view.back_button.clicked.connect(self.back)
-        self.user_service = UserService()
-        self.mail_sender = MailSender()
+        self.user_service = user_service
+        self.mail_sender = mail_sender
 
 
     def back(self):
@@ -51,10 +51,6 @@ class SignUpController:
                                         body=f"Your authentication token is: {token}")
             self.main_window.sign_up_auth_controller.set_user(kwargs)
             self.main_window.show_sign_up_auth_view()
-            # user = self.user_service.create_user(kwargs)
-            # if not user:
-            #     raise Exception('Error while save user')
-            # self.view.message_label.setText('Sign up successful')
         except Exception as e:
             self.view.message_label.setText(f'Sign up failed: {str(e)}')
 

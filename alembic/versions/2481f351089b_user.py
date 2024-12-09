@@ -28,6 +28,7 @@ def upgrade():
         sa.Column('email', sa.String(), nullable=False, unique=True),
         sa.Column('password', sa.String(), nullable=False),
         sa.Column('auth_token', sa.String(), nullable=True),
+        sa.Column('reset_code', sa.String(), nullable=True)
     )
 
 

@@ -27,6 +27,9 @@ class LoginView(QWidget):
         self.back_button = QPushButton('Back', self)
         layout.addWidget(self.back_button)
 
+        self.forgot_password_button = QPushButton('Forgot Password?', self)
+        layout.addWidget(self.forgot_password_button)
+
         self.message_label = QLabel('', self)
         layout.addWidget(self.message_label)
 

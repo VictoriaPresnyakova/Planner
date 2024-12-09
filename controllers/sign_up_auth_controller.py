@@ -4,12 +4,12 @@ from services.user_service import UserService
 
 
 class SignUpAuthController:
-    def __init__(self, view, main_window):
+    def __init__(self, view, main_window, user_service, mail_sender):
         self.view = view
         self.main_window = main_window
         self.user_kwargs = None
-        self.user_service = UserService()
-        self.mail_sender = MailSender()
+        self.user_service = user_service
+        self.mail_sender = mail_sender
         self.view.verify_button.clicked.connect(self.verify_token)
         self.view.resend_token_button.clicked.connect(self.resend_token)
         self.view.back_button.clicked.connect(self.back)
