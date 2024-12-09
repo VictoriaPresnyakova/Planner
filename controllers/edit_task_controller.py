@@ -26,6 +26,10 @@ class EditTaskController:
             self.view.deadline_input.setDateTime(self.task.deadline)
 
     def save_task(self):
+        if self.view.title_input.text() == '':
+            self.view.message_label.setText('Empty title')
+            return
+
         self.task.title = self.view.title_input.text()
         self.task.description = self.view.description_input.text()
         self.task.status = self.view.status_input.currentText()
