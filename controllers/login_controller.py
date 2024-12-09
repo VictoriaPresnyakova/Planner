@@ -12,13 +12,14 @@ from views.login_view import LoginView
 
 
 class LoginController:
-    def __init__(self, view, main_window):
+    def __init__(self, view, main_window, user_service, mail_sender):
         self.view = view
         self.main_window = main_window
         self.view.login_button.clicked.connect(self.handle_login)
         self.view.back_button.clicked.connect(self.back)
-        self.user_service = UserService()
-        self.mail_sender = MailSender()
+        self.view.forgot_password_button.clicked.connect(lambda: self.main_window.show_password_recovery_view())
+        self.user_service = user_service
+        self.mail_sender = mail_sender
 
     def back(self):
         self.view.message_label.setText('')
