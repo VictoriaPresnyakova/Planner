@@ -15,6 +15,9 @@ class TaskListController:
         self.view.reset_filter_button.clicked.connect(self.reset_filter)
         self.view.tabs.currentChanged.connect(self.load_tasks)
 
+        self.view.assigned_table.cellDoubleClicked.connect(self.open_task_details)
+        self.view.created_table.cellDoubleClicked.connect(self.open_task_details)
+
         self.load_tasks()
 
     def back(self):
@@ -33,14 +36,15 @@ class TaskListController:
         table.setRowCount(len(tasks))
 
         for row, task in enumerate(tasks):
-            self._add_readonly_item(table, row, 0, task.created_at.strftime("%Y-%m-%d %H:%M") )
-            self._add_readonly_item(table, row, 1, task.title)
-            self._add_readonly_item(table, row, 2, task.description)
-            self._add_readonly_item(table, row, 3, task.status)
+            self._add_readonly_item(table, row, 0, str(task.id))
+            self._add_readonly_item(table, row, 1, task.created_at.strftime("%Y-%m-%d %H:%M") )
+            self._add_readonly_item(table, row, 2, task.title)
+            self._add_readonly_item(table, row, 3, task.description)
+            self._add_readonly_item(table, row, 4, task.status)
             assigned_user = self.user_service.find_user_by_id(task.assigned_user_id)
             assigned_user_name = f"{assigned_user.name} {assigned_user.surname}" if assigned_user else "Unassigned"
-            self._add_readonly_item(table, row, 4, assigned_user_name)
-            self._add_readonly_item(table, row, 5,
+            self._add_readonly_item(table, row, 5, assigned_user_name)
+            self._add_readonly_item(table, row, 6,
                                     task.deadline.strftime("%Y-%m-%d %H:%M") if task.deadline else "No deadline")
 
         self.filter_tasks(self.view.filter_input.text())
@@ -66,3 +70,19 @@ class TaskListController:
         """Сбрасывает фильтр и очищает поле ввода."""
         self.view.filter_input.clear()
         self.filter_tasks("")  # Сбрасываем фильтр, чтобы показать все строки
+
+    def open_task_details(self, row, column):
+        """Открывает детальную информацию о задаче для редактирования."""
+        current_tab_index = self.view.tabs.currentIndex()
+
+        if current_tab_index == 0:
+            table = self.view.assigned_table
+        else:
+            table = self.view.created_table
+
+        task_id = int(table.item(row, 0).text())
+        task = self.task_service.find_task_by_id(task_id)
+        self.main_window.show_task_edit_view(task)
+
+
+

@@ -30,19 +30,21 @@ class TaskListView(QWidget):
 
         # Таблица для задач, назначенных пользователю
         self.assigned_table = QTableWidget(self)
-        self.assigned_table.setColumnCount(6)
-        self.assigned_table.setHorizontalHeaderLabels(["Created At", "Title", "Description", "Status", "Assigned User", "Deadline"])
+        self.assigned_table.setColumnCount(7)
+        self.assigned_table.setHorizontalHeaderLabels(["ID", "Created At", "Title", "Description", "Status", "Assigned User", "Deadline"])
         self.assigned_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.assigned_table.setSortingEnabled(True)
         self.assigned_table.verticalHeader().setVisible(False)
+        self.assigned_table.setColumnHidden(0, True)
 
         # Таблица для задач, созданных пользователем
         self.created_table = QTableWidget(self)
-        self.created_table.setColumnCount(6)
-        self.created_table.setHorizontalHeaderLabels(["Created At", "Title", "Description", "Status", "Assigned User", "Deadline"])
+        self.created_table.setColumnCount(7)
+        self.created_table.setHorizontalHeaderLabels(["ID", "Created At", "Title", "Description", "Status", "Assigned User", "Deadline"])
         self.created_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.created_table.setSortingEnabled(True)
         self.created_table.verticalHeader().setVisible(False)
+        self.created_table.setColumnHidden(0, True)
 
         # Добавляем таблицы во вкладки
         self.tabs.addTab(self.assigned_table, "Assigned to Me")
