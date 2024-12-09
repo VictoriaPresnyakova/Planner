@@ -1,6 +1,11 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QTableWidgetItem
-
+import openpyxl
+from openpyxl.styles import Font
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfgen import canvas
+from PyQt5.QtWidgets import QFileDialog, QMessageBox
+import os
 
 class TaskListController:
     def __init__(self, view, main_window, user, task_service, user_service):
@@ -17,6 +22,9 @@ class TaskListController:
 
         self.view.assigned_table.cellDoubleClicked.connect(self.open_task_details)
         self.view.created_table.cellDoubleClicked.connect(self.open_task_details)
+
+        self.view.export_excel_button.clicked.connect(self.export_to_excel)
+        self.view.export_pdf_button.clicked.connect(self.export_to_pdf)
 
         self.load_tasks()
 
@@ -83,6 +91,91 @@ class TaskListController:
         task_id = int(table.item(row, 0).text())
         task = self.task_service.find_task_by_id(task_id)
         self.main_window.show_task_edit_view(task)
+
+    def _get_current_table(self):
+        current_tab_index = self.view.tabs.currentIndex()
+        return self.view.assigned_table if current_tab_index == 0 else self.view.created_table
+
+    def export_to_excel(self):
+        # Открываем диалог выбора папки
+        folder_path = QFileDialog.getExistingDirectory(self.view, "Select Folder to Save Excel Report")
+        if not folder_path:
+            return  # Если пользователь отменил выбор
+
+        file_path = os.path.join(folder_path, "tasks_report.xlsx")
+
+        table = self._get_current_table()
+        workbook = openpyxl.Workbook()
+        sheet = workbook.active
+        sheet.title = "Tasks"
+
+        # Получаем видимые заголовки
+        visible_columns = [col for col in range(table.columnCount()) if not table.isColumnHidden(col)]
+        headers = [table.horizontalHeaderItem(col).text() for col in visible_columns]
+        sheet.append(headers)
+
+        # Стиль для заголовков
+        for col_num, header in enumerate(headers, start=1):
+            sheet.cell(row=1, column=col_num, value=header).font = Font(bold=True)
+
+        # Добавляем видимые строки
+        row_index = 2
+        for row in range(table.rowCount()):
+            if table.isRowHidden(row):
+                continue
+            row_data = [table.item(row, col).text() if table.item(row, col) else "" for col in visible_columns]
+            sheet.append(row_data)
+            row_index += 1
+
+        # Сохранение файла
+        workbook.save(file_path)
+        QMessageBox.information(self.view, "Success", f"Report saved as {file_path}")
+
+    def export_to_pdf(self):
+        # Открываем диалог выбора папки
+        folder_path = QFileDialog.getExistingDirectory(self.view, "Select Folder to Save PDF Report")
+        if not folder_path:
+            return  # Если пользователь отменил выбор
+
+        file_path = os.path.join(folder_path, "tasks_report.pdf")
+
+        table = self._get_current_table()
+        c = canvas.Canvas(file_path, pagesize=A4)
+        width, height = A4
+
+        # Начальные координаты
+        x_offset = 50
+        y_offset = height - 50
+        line_height = 20
+
+        # Получаем видимые заголовки
+        visible_columns = [col for col in range(table.columnCount()) if not table.isColumnHidden(col)]
+        headers = [table.horizontalHeaderItem(col).text() for col in visible_columns]
+
+        # Рисуем заголовки
+        c.setFont("Helvetica-Bold", 12)
+        for col_num, header in enumerate(headers):
+            c.drawString(x_offset + col_num * 100, y_offset, header)
+        y_offset -= line_height
+
+        # Рисуем видимые строки
+        c.setFont("Helvetica", 10)
+        for row in range(table.rowCount()):
+            if table.isRowHidden(row):
+                continue
+            for col_num, col in enumerate(visible_columns):
+                item = table.item(row, col)
+                text = item.text() if item else ""
+                c.drawString(x_offset + col_num * 100, y_offset, text)
+            y_offset -= line_height
+
+            # Добавляем новую страницу при необходимости
+            if y_offset < 50:
+                c.showPage()
+                y_offset = height - 50
+
+        c.save()
+        QMessageBox.information(self.view, "Success", f"Report saved as {file_path}")
 
 
 

@@ -51,6 +51,12 @@ class TaskListView(QWidget):
         self.tabs.addTab(self.created_table, "Created by Me")
         layout.addWidget(self.tabs)
 
+        self.export_excel_button = QPushButton("Export to Excel", self)
+        self.export_pdf_button = QPushButton("Export to PDF", self)
+
+        layout.addWidget(self.export_excel_button)
+        layout.addWidget(self.export_pdf_button)
+
         # Кнопка для возврата назад
         self.back_button = QPushButton("Back", self)
         layout.addWidget(self.back_button)
