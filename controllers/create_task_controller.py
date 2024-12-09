@@ -30,6 +30,7 @@ class CreateTaskController:
         self.view.deadline_input.clear()
 
     def load_user_data(self):
+        self.view.assigned_user_id_input.clear()
         users = self.user_service.get_all_users()
         self.view.assigned_user_id_input.addItem('', None)
         for user in users:
