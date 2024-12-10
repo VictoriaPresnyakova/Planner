@@ -40,6 +40,9 @@ class EditTaskView(QWidget):
         layout.addWidget(self.deadline_label)
         layout.addWidget(self.deadline_input)
 
+        self.message_label = QLabel('', self)
+        layout.addWidget(self.message_label)
+
         self.save_button = QPushButton("Save", self)
         layout.addWidget(self.save_button)
 
