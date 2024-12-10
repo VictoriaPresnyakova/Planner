@@ -147,7 +147,6 @@ class MainWindow(QMainWindow):
             self.show_message_box('Please Log In', 'You should log in first',
                                   lambda: self.show_initial_view())
 
-
     def show_task_edit_view(self, task):
         self.edit_task_controller = EditTaskController(self.edit_task_view, self, task, self.task_service, self.user_service)
         self.stacked_widget.setCurrentWidget(self.edit_task_view)
@@ -159,7 +158,7 @@ class MainWindow(QMainWindow):
         if on_click:
             msg.buttonClicked.connect(on_click)
             msg.destroyed.connect(on_click)
-        x = msg.exec_()  # this will show our messagebox
+        x = msg.exec_()  # this will show messagebox
 
     def set_current_user(self, user: User):
         global CURRENT_USER
