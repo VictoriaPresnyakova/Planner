@@ -16,7 +16,7 @@ class SignUpAuthController:
 
     def back(self):
         self.view.message_label.setText('')
-        self.main_window.show_sign_view()
+        self.main_window.show_signup_view()
 
     def resend_token(self):
         if self.user_kwargs:
