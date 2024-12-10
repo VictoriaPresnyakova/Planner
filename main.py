@@ -147,7 +147,10 @@ class MainWindow(QMainWindow):
 
     def show_initial_view(self):
         try:
-            self.stacked_widget.setCurrentWidget(self.initial_view)
+            if CURRENT_USER:
+                self.show_main_view()
+            else:
+                self.stacked_widget.setCurrentWidget(self.initial_view)
         except Exception as e:
             traceback.print_exc()
             pass

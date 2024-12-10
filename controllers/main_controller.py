@@ -1,3 +1,5 @@
+import traceback
+
 from models.user import User
 
 
@@ -11,8 +13,12 @@ class MainController:
         self.view.exit_button.clicked.connect(self.exit)
 
     def exit(self):
-        self.main_window.set_current_user(None)
-        self.main_window.show_initial_view()
+        try:
+            self.main_window.set_current_user(None)
+            self.main_window.show_initial_view()
+        except Exception as e:
+            traceback.print_exc()
+            self.main_window.show_initial_view()
 
 
 

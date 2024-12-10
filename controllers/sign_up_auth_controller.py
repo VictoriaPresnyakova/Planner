@@ -1,3 +1,5 @@
+import traceback
+
 from models.user import User
 from services.mail_sender import MailSender
 from services.user_service import UserService
@@ -15,30 +17,46 @@ class SignUpAuthController:
         self.view.back_button.clicked.connect(self.back)
 
     def back(self):
-        self.view.message_label.setText('')
-        self.main_window.show_signup_view()
+        try:
+            self.view.message_label.setText('')
+            self.main_window.show_signup_view()
+        except Exception as e:
+            traceback.print_exc()
+            self.main_window.show_initial_view()
 
     def resend_token(self):
-        if self.user_kwargs:
-            token = self.user_service.generate_token()
-            self.user_kwargs['auth_token'] = token
-            self.mail_sender.send_email(self.user_kwargs['email'], subject="Your Authentication Token",
-                                        body=f"Your authentication token is: {token}")
-            self.view.message_label.setText('Token was resend')
+        try:
+            if self.user_kwargs:
+                token = self.user_service.generate_token()
+                self.user_kwargs['auth_token'] = token
+                self.mail_sender.send_email(self.user_kwargs['email'], subject="Your Authentication Token",
+                                            body=f"Your authentication token is: {token}")
+                self.view.message_label.setText('Token was resend')
+        except Exception as e:
+            traceback.print_exc()
+            self.back()
 
     def verify_token(self):
-        token = self.view.token_input.text()
         try:
-            if self.user_kwargs and self.user_kwargs['auth_token'] == token:
-                self.user_kwargs['auth_token'] = None
-                user = self.user_service.create_user(self.user_kwargs)
-                if not user:
-                    raise Exception('Error while save user')
-                self.main_window.show_login_view()
-            else:
-                self.view.message_label.setText('Invalid token')
+            token = self.view.token_input.text()
+            try:
+                if self.user_kwargs and self.user_kwargs['auth_token'] == token:
+                    self.user_kwargs['auth_token'] = None
+                    user = self.user_service.create_user(self.user_kwargs)
+                    if not user:
+                        raise Exception('Error while save user')
+                    self.main_window.show_login_view()
+                else:
+                    self.view.message_label.setText('Invalid token')
+            except Exception as e:
+                self.view.message_label.setText(f'Sign up failed: {str(e)}')
         except Exception as e:
-            self.view.message_label.setText(f'Sign up failed: {str(e)}')
+            traceback.print_exc()
+            self.back()
 
     def set_user(self, kwargs):
-        self.user_kwargs = kwargs
+        try:
+            self.user_kwargs = kwargs
+        except Exception as e:
+            traceback.print_exc()
+            self.back()

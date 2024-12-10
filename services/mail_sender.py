@@ -1,5 +1,6 @@
 import smtplib
 import time
+import traceback
 from threading import Thread
 
 from misc.config import *
@@ -37,6 +38,9 @@ class MailSender:
             if self.messages:
                 for x in self.messages:
                     message = self.messages.pop(0)
-                    self._send_email(message.get('to_email', ''), message.get('subject', ''), message.get('body', ''))
+                    try:
+                        self._send_email(message.get('to_email', ''), message.get('subject', ''), message.get('body', ''))
+                    except:
+                        traceback.print_exc()
             else:
                 time.sleep(1)

@@ -1,4 +1,5 @@
 import hashlib
+import traceback
 
 from PyQt5.QtWidgets import QApplication
 
@@ -22,25 +23,33 @@ class LoginController:
         self.mail_sender = mail_sender
 
     def back(self):
-        self.view.message_label.setText('')
-        self.main_window.show_initial_view()
+        try:
+            self.view.message_label.setText('')
+            self.main_window.show_initial_view()
+        except Exception as e:
+            traceback.print_exc()
+            self.main_window.show_initial_view()
 
     def handle_login(self):
-        username = self.view.username_input.text()
-        user = self.user_service.get_user_by_email(username)
+        try:
+            username = self.view.username_input.text()
+            user = self.user_service.get_user_by_email(username)
 
-        if user and user.password == hashlib.sha256(self.view.password_input.text().encode()).hexdigest():
-            if not user.auth_token:
-                token = self.user_service.generate_token()
-                user.auth_token = token
-                self.user_service.update_user(user)
-                self.mail_sender.send_email(user.email, subject="Your Authentication Token",
-                                            body=f"Your authentication token is: {token}")
-                self.main_window.auth_controller.set_user(user)
-                self.main_window.show_auth_view()
+            if user and user.password == hashlib.sha256(self.view.password_input.text().encode()).hexdigest():
+                if not user.auth_token:
+                    token = self.user_service.generate_token()
+                    user.auth_token = token
+                    self.user_service.update_user(user)
+                    self.mail_sender.send_email(user.email, subject="Your Authentication Token",
+                                                body=f"Your authentication token is: {token}")
+                    self.main_window.auth_controller.set_user(user)
+                    self.main_window.show_auth_view()
+                else:
+                    self.main_window.auth_controller.set_user(user)
+                    self.main_window.show_auth_view()
+
             else:
-                self.main_window.auth_controller.set_user(user)
-                self.main_window.show_auth_view()
-
-        else:
-            self.view.message_label.setText('Invalid credentials')
+                self.view.message_label.setText('Invalid credentials')
+        except Exception as e:
+            traceback.print_exc()
+            self.back()
