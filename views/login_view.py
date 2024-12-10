@@ -11,13 +11,13 @@ class LoginView(QWidget):
         layout = QVBoxLayout()
 
         self.username_input = QLineEdit(self)
-        self.username_input.setText('admin@mail.ru')
-        #self.username_input.setPlaceholderText('Email')
+        #self.username_input.setText('admin@mail.ru')
+        self.username_input.setPlaceholderText('Email')
         layout.addWidget(self.username_input)
 
         self.password_input = QLineEdit(self)
-        self.password_input.setText('12345')
-        #self.password_input.setPlaceholderText('Password')
+        #self.password_input.setText('12345')
+        self.password_input.setPlaceholderText('Password')
         self.password_input.setEchoMode(QLineEdit.Password)
         layout.addWidget(self.password_input)
 

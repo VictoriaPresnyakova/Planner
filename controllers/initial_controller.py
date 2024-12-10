@@ -1,3 +1,5 @@
+import traceback
+
 from views.initial_view import InitialView
 
 
@@ -9,8 +11,16 @@ class InitialController:
         self.view.signup_button.clicked.connect(self.show_signup)
 
     def show_login(self):
-        self.main_window.show_login_view()
+        try:
+            self.main_window.show_login_view()
+        except Exception as e:
+            traceback.print_exc()
+            self.main_window.show_initial_view()
 
     def show_signup(self):
-        self.main_window.show_signup_view()
+        try:
+            self.main_window.show_signup_view()
+        except Exception as e:
+            traceback.print_exc()
+            self.main_window.show_initial_view()
 
