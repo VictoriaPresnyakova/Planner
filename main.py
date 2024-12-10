@@ -1,3 +1,4 @@
+import traceback
 from threading import Thread
 
 from PyQt5.QtWidgets import QApplication, QMessageBox
@@ -100,69 +101,121 @@ class MainWindow(QMainWindow):
             self.show_main_view()
 
     def show_login_view(self):
-        self.stacked_widget.setCurrentWidget(self.login_view)
+        try:
+            self.stacked_widget.setCurrentWidget(self.login_view)
+        except Exception as e:
+            traceback.print_exc()
+            self.show_initial_view()
 
     def show_password_recovery_view(self):
-        self.stacked_widget.setCurrentWidget(self.password_recovery_view)
+        try:
+            self.stacked_widget.setCurrentWidget(self.password_recovery_view)
+        except Exception as e:
+            traceback.print_exc()
+            self.show_login_view()
 
     def show_auth_view(self):
-        self.stacked_widget.setCurrentWidget(self.auth_view)
+        try:
+            self.stacked_widget.setCurrentWidget(self.auth_view)
+        except Exception as e:
+            traceback.print_exc()
+            self.show_login_view()
+
 
     def show_sign_up_auth_view(self):
-        self.stacked_widget.setCurrentWidget(self.signup_auth_view)
+        try:
+            self.stacked_widget.setCurrentWidget(self.signup_auth_view)
+        except Exception as e:
+            traceback.print_exc()
+            self.show_signup_view()
 
     def show_signup_view(self):
-        self.stacked_widget.setCurrentWidget(self.signup_view)
+        try:
+            self.stacked_widget.setCurrentWidget(self.signup_view)
+        except Exception as e:
+            traceback.print_exc()
+            self.show_initial_view()
 
     def show_main_view(self):
-        if CURRENT_USER:
-            self.main_controller = MainController(self.main_view, self, CURRENT_USER)
-            self.stacked_widget.setCurrentWidget(self.main_view)
+        try:
+            if CURRENT_USER:
+                self.main_controller = MainController(self.main_view, self, CURRENT_USER)
+                self.stacked_widget.setCurrentWidget(self.main_view)
+        except Exception as e:
+            traceback.print_exc()
+            self.show_initial_view()
 
     def show_initial_view(self):
-        self.stacked_widget.setCurrentWidget(self.initial_view)
+        try:
+            self.stacked_widget.setCurrentWidget(self.initial_view)
+        except Exception as e:
+            traceback.print_exc()
+            pass
 
     def show_profile_view(self):
-        if CURRENT_USER:
-            self.profile_controller = ProfileController(self.profile_view, self, CURRENT_USER, self.user_service)
-            self.stacked_widget.setCurrentWidget(self.profile_view)
-        else:
-            self.show_message_box('Please Log In', 'You should log in first',
-                                                  lambda: self.show_initial_view())
+        try:
+            if CURRENT_USER:
+                self.profile_controller = ProfileController(self.profile_view, self, CURRENT_USER, self.user_service)
+                self.stacked_widget.setCurrentWidget(self.profile_view)
+            else:
+                self.show_message_box('Please Log In', 'You should log in first',
+                                                      lambda: self.show_initial_view())
+        except Exception as e:
+            traceback.print_exc()
+            self.show_main_view()
 
     def show_create_task_view(self):
-        if CURRENT_USER:
-            self.create_task_controller = CreateTaskController(self.create_task_view, self, CURRENT_USER, self.task_service, self.user_service)
-            self.stacked_widget.setCurrentWidget(self.create_task_view)
-        else:
-            self.show_message_box('Please Log In', 'You should log in first',
-                                  lambda: self.show_initial_view())
+        try:
+            if CURRENT_USER:
+                self.create_task_controller = CreateTaskController(self.create_task_view, self, CURRENT_USER, self.task_service, self.user_service)
+                self.stacked_widget.setCurrentWidget(self.create_task_view)
+            else:
+                self.show_message_box('Please Log In', 'You should log in first',
+                                      lambda: self.show_initial_view())
+        except Exception as e:
+            traceback.print_exc()
+            self.show_main_view()
 
     def show_task_list_view(self):
-        if CURRENT_USER:
-            self.task_list_controller = TaskListController(self.task_list_view, self, CURRENT_USER, self.task_service,
-                                                           self.user_service)
-            self.stacked_widget.setCurrentWidget(self.task_list_view)
-        else:
-            self.show_message_box('Please Log In', 'You should log in first',
-                                  lambda: self.show_initial_view())
+        try:
+            if CURRENT_USER:
+                self.task_list_controller = TaskListController(self.task_list_view, self, CURRENT_USER, self.task_service,
+                                                               self.user_service)
+                self.stacked_widget.setCurrentWidget(self.task_list_view)
+            else:
+                self.show_message_box('Please Log In', 'You should log in first',
+                                      lambda: self.show_initial_view())
+        except Exception as e:
+            traceback.print_exc()
+            self.show_main_view()
 
     def show_task_edit_view(self, task):
-        self.edit_task_controller = EditTaskController(self.edit_task_view, self, task, self.task_service, self.user_service)
-        self.stacked_widget.setCurrentWidget(self.edit_task_view)
+        try:
+            self.edit_task_controller = EditTaskController(self.edit_task_view, self, task, self.task_service, self.user_service)
+            self.stacked_widget.setCurrentWidget(self.edit_task_view)
+        except Exception as e:
+            traceback.print_exc()
+            self.show_main_view()
 
     def show_message_box(self, title, text, on_click=None):
-        msg = QMessageBox()
-        msg.setWindowTitle(title)
-        msg.setText(text)
-        if on_click:
-            msg.buttonClicked.connect(on_click)
-            msg.destroyed.connect(on_click)
-        x = msg.exec_()  # this will show messagebox
+        try:
+            msg = QMessageBox()
+            msg.setWindowTitle(title)
+            msg.setText(text)
+            if on_click:
+                msg.buttonClicked.connect(on_click)
+                msg.destroyed.connect(on_click)
+            x = msg.exec_()  # this will show messagebox
+        except Exception as e:
+            traceback.print_exc()
+            self.show_main_view()
 
     def set_current_user(self, user: User):
-        global CURRENT_USER
-        CURRENT_USER = user
+        try:
+            global CURRENT_USER
+            CURRENT_USER = user
+        except Exception as e:
+            traceback.print_exc()
 
 
 if __name__ == '__main__':
